@@ -12,7 +12,7 @@ const DocItem = ({ doc }) => {
       <td>{doc.registrationDate}</td>
       <td>
       <Link to="/DoctorProfile">View</Link>
-        <button>Deletee</button>
+        <button>Delete</button>
       </td>
     </tr>
   );
