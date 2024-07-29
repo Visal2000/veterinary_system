@@ -1,0 +1,122 @@
+/* NoticeBoard.css */
+.notice-board-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  background-color: #f8f9fa;
+}
+
+.add-notice-container,
+.view-notices-container {
+  width: 100%;
+  max-width: 600px;
+  background-color: #fff;
+  border: 1px solid #dee2e6;
+  border-radius: 0.25rem;
+  padding: 1rem;
+  margin-bottom: 2rem;
+}
+
+.add-notice-container h2,
+.view-notices-container h2 {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #80bdff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.25);
+}
+
+.form-group button {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #fff;
+  background-color: #007bff;
+  border: 1px solid #007bff;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+}
+
+.form-group button:hover {
+  background-color: #0056b3;
+  border-color: #0056b3;
+}
+
+.view-notices-container ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.view-notices-container li {
+  border-bottom: 1px solid #dee2e6;
+  padding: 1rem 0;
+}
+
+.view-notices-container li:last-child {
+  border-bottom: none;
+}
+
+.view-notices-container p {
+  margin: 0.5rem 0;
+}
+
+.view-notices-container button {
+  margin-right: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  color: #fff;
+  background-color: #28a745;
+  border: 1px solid #28a745;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+}
+
+.view-notices-container button:hover {
+  background-color: #218838;
+  border-color: #218838;
+}
+
+.view-notices-container button:last-child {
+  background-color: #dc3545;
+  border-color: #dc3545;
+}
+
+.view-notices-container button:last-child:hover {
+  background-color: #c82333;
+  border-color: #bd2130;
+}
+
+.notice-image {
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 1rem;
+  border-radius: 0.25rem;
+  border: 1px solid #dee2e6;
+}
