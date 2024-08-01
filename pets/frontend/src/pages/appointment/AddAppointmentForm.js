@@ -61,7 +61,7 @@ const AddAppointmentForm = () => {
   const [name, setName] = useState('');
   const [reason, setReason] = useState('');
   const [doctor, setDoctor] = useState('');
-  const [date, setDate] = useState('');s
+  const [date, setDate] = useState('');
   const [time, setTime] = useState('');
 
   const handleSubmit = (e) => {

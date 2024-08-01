@@ -4,6 +4,7 @@ const mysql = require('mysql2');
 const cors = require('cors');
 
 const app = express();
+exports.app = app;
 const port = 5000;
 
 
@@ -13,9 +14,10 @@ app.use(bodyParser.json());
 const db = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: 'Cpktnwt45@2665',
+  password: '200123704050A',
   database: 'vetez',
 });
+exports.db = db;
 
 db.connect(err => {
   if (err) {
@@ -29,7 +31,35 @@ db.connect(err => {
 
 
 
+// Fetch all pets
+app.get('/pets', (req, res) => {
+  const sql = 'SELECT * FROM pets';
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('Error retrieving pets');
+    } else {
+      res.status(200).json(results);
+    }
+  });
+});
 
+// Fetch pet data by ID
+app.get('/pets/:petId', (req, res) => {
+  const { petId } = req.params;
+  const sql = 'SELECT * FROM pets WHERE petId = ?';
+  db.query(sql, [petId], (err, results) => {
+    if (err) {
+      res.status(500).send('Error fetching pet');
+    } else if (results.length === 0) {
+      res.status(404).send('Pet not found');
+    } else {
+      res.json(results[0]);
+    }
+  });
+});
+
+// Add a new pet
 app.post('/add-pet', (req, res) => {
   const { petName, birthday, breed, ownerName, ownerId, address, registrationDate, petId, email } = req.body;
   const sql = 'INSERT INTO pets (petName, birthday, breed, ownerName, ownerId, address, registrationDate, petId, email) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
@@ -44,41 +74,115 @@ app.post('/add-pet', (req, res) => {
 });
 
 
-
-
-
-app.get('/pets', (req, res) => {
-    const sql = 'SELECT * FROM pets';
-    db.query(sql, (err, results) => {
-      if (err) {
-        console.error(err);
-        res.status(500).send('Error retrieving pets');
-      } else {
-        res.status(200).json(results);
-      }
-    });
-  });
-
-
-
-
-
-
-
-  // Endpoint to fetch a pet by ID
-app.get('/pets/:petId', (req, res) => {
+// Update pet data by ID
+app.put('/pets/:petId', (req, res) => {
   const { petId } = req.params;
-  const sql = 'SELECT * FROM pets WHERE petId = ?';
-  db.query(sql, [petId], (err, results) => {
+  const updatedPetData = req.body;
+  const query = 'UPDATE pets SET ? WHERE petId = ?';
+  db.query(query, [updatedPetData, petId], (err, results) => {
     if (err) {
-      res.status(500).send('Error fetching pet');
-    } else if (results.length === 0) {
-      res.status(404).send('Pet not found');
+      console.error('Error updating pet data:', err);
+      res.status(500).send('Error updating pet data.');
     } else {
-      res.json(results[0]);
+      res.send('Pet data updated successfully.');
     }
   });
 });
+
+
+
+
+// Delete pet data by ID
+app.delete('/pets/:petId', (req, res) => {
+  const { petId } = req.params;
+
+  // Delete associated treatments first
+  const deleteTreatmentsSql = 'DELETE FROM treatments WHERE petId = ?';
+  db.query(deleteTreatmentsSql, [petId], (err) => {
+    if (err) {
+      console.error('Error deleting treatments:', err);
+      res.status(500).send('Error deleting treatments.');
+      return;
+    }
+
+    // Delete pet
+    const deletePetSql = 'DELETE FROM pets WHERE petId = ?';
+    db.query(deletePetSql, [petId], (err, result) => {
+      if (err) {
+        console.error('Error deleting pet data:', err);
+        res.status(500).send('Error deleting pet data.');
+      } else {
+        res.send('Pet data deleted successfully.');
+      }
+    });
+  });
+});
+
+// Fetch all treatments for a pet
+app.get('/treatments/:petId', (req, res) => {
+  const { petId } = req.params;
+  const sql = 'SELECT * FROM treatments WHERE petId = ?';
+  db.query(sql, [petId], (err, results) => {
+    if (err) {
+      console.error('Error fetching treatments:', err);
+      res.status(500).send('Error fetching treatments.');
+    } else {
+      res.json(results);
+    }
+  });
+});
+
+// Add a new treatment
+app.post('/treatments', (req, res) => {
+  const { petId, treatmentName, doctor, date } = req.body;
+  const sql = 'INSERT INTO treatments (petId, treatmentName, doctor, date) VALUES (?, ?, ?, ?)';
+  db.query(sql, [petId, treatmentName, doctor, date], (err, result) => {
+    if (err) {
+      console.error('Error adding treatment:', err);
+      res.status(500).send('Error adding treatment.');
+    } else {
+      res.status(200).send('Treatment added successfully');
+    }
+  });
+});
+
+// Create treatments table if it does not exist
+app.get('/create-treatments-table', (req, res) => {
+  const sql = `
+    CREATE TABLE IF NOT EXISTS treatments (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      petId VARCHAR(8),
+      treatmentName VARCHAR(255),
+      doctor VARCHAR(255),
+      date DATE,
+      FOREIGN KEY (petId) REFERENCES pets(petId) ON DELETE CASCADE
+    )
+  `;
+  db.query(sql, (err, result) => {
+    if (err) {
+      console.error('Error creating treatments table:', err);
+      res.status(500).send('Error creating treatments table.');
+    } else {
+      res.send('Treatments table created or already exists.');
+    }
+  });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

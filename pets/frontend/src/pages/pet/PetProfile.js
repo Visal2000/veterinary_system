@@ -1,5 +1,8 @@
-// PetProfile.js
-import React, { useState } from 'react';
+
+
+
+
+import React, { useState, useEffect } from 'react';
 import {
   MDBCol,
   MDBContainer,
@@ -9,26 +12,89 @@ import {
   MDBCardBody,
   MDBCardImage,
   MDBInput,
-  MDBBtn,
+  
   MDBTable,
   MDBTableHead,
   MDBTableBody
 } from 'mdb-react-ui-kit';
-import './Profile.css'; // Import the CSS file
+import { useParams, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import './Profile.css'; 
 
 export default function PetProfile() {
+  const { petId } = useParams();
+  const navigate = useNavigate();
+  const [petData, setPetData] = useState(null);
   const [treatments, setTreatments] = useState([]);
   const [treatmentName, setTreatmentName] = useState('');
   const [doctor, setDoctor] = useState('');
   const [date, setDate] = useState('');
+  const [isEditing, setIsEditing] = useState(false);
 
-  const handleAddTreatment = () => {
-    const newTreatment = { treatmentName, doctor, date };
-    setTreatments([...treatments, newTreatment]);
-    setTreatmentName('');
-    setDoctor('');
-    setDate('');
+  useEffect(() => {
+    const fetchPetData = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5000/pets/${petId}`);
+        setPetData(response.data);
+      } catch (err) {
+        console.error('Error fetching pet data:', err);
+      }
+    };
+    fetchPetData();
+  }, [petId]);
+
+  useEffect(() => {
+    const fetchTreatments = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5000/treatments/${petId}`);
+        setTreatments(response.data);
+      } catch (err) {
+        console.error('Error fetching treatments:', err);
+      }
+    };
+    fetchTreatments();
+  }, [petId]);
+
+  const handleUpdatePet = async () => {
+    try {
+      await axios.put(`http://localhost:5000/pets/${petId}`, petData);
+      window.alert('Pet updated successfully.');
+      setIsEditing(false);
+    } catch (err) {
+      console.error('Error updating pet data:', err);
+      
+    }
   };
+
+  const handleDeletePet = async () => {
+    try {
+      await axios.delete(`http://localhost:5000/pets/${petId}`);
+      window.alert('Pet deleted successfully.');
+      navigate('/Petlist'); // Redirect to pet list or another appropriate page
+      await axios.delete(`http://localhost:5000/treatments/${petId}`); // Also delete treatments
+      
+      
+    } catch (err) {
+      console.error('Error deleting pet data:', err);
+    }
+  };
+
+  const handleAddTreatment = async () => {
+    try {
+      await axios.post('http://localhost:5000/treatments', { petId, treatmentName, doctor, date });
+      setTreatments([...treatments, { treatmentName, doctor, date }]);
+      setTreatmentName('');
+      setDoctor('');
+      setDate('');
+      window.alert('Treatment added successfully.');
+    } catch (err) {
+      console.error('Error adding treatment:', err);
+    }
+  };
+
+  if (!petData) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <section className="pet-profile-section">
@@ -44,12 +110,12 @@ export default function PetProfile() {
                   style={{ width: '150px' }}
                   fluid
                 />
-                <p className="text-muted mb-1">Tommy</p>
-                <p className="text-muted mb-4">ID : wqjk1efh</p>
+                <p className="text-muted mb-1">{petData.petName}</p>
+                <p className="text-muted mb-4">ID : {petData.petId}</p>
               </MDBCardBody>
             </MDBCard>
           </MDBCol>
-          
+
           <MDBCol>
             <MDBCard>
               <MDBCardBody>
@@ -58,7 +124,14 @@ export default function PetProfile() {
                     <MDBCardText>Name</MDBCardText>
                   </MDBCol>
                   <MDBCol>
-                    <MDBCardText className="text-muted">Buddy</MDBCardText>
+                    {isEditing ? (
+                      <MDBInput
+                        value={petData.petName}
+                        onChange={(e) => setPetData({ ...petData, petName: e.target.value })}
+                      />
+                    ) : (
+                      <MDBCardText className="text-muted">{petData.petName}</MDBCardText>
+                    )}
                   </MDBCol>
                 </MDBRow>
                 <hr />
@@ -67,7 +140,15 @@ export default function PetProfile() {
                     <MDBCardText>Birthday</MDBCardText>
                   </MDBCol>
                   <MDBCol>
-                    <MDBCardText className="text-muted">2000-04-09</MDBCardText>
+                    {isEditing ? (
+                      <MDBInput
+                        type="date"
+                        value={petData.birthday.split('T')[0]} // Handle date format
+                        onChange={(e) => setPetData({ ...petData, birthday: e.target.value })}
+                      />
+                    ) : (
+                      <MDBCardText className="text-muted">{petData.birthday}</MDBCardText>
+                    )}
                   </MDBCol>
                 </MDBRow>
                 <hr />
@@ -76,7 +157,14 @@ export default function PetProfile() {
                     <MDBCardText>Breed</MDBCardText>
                   </MDBCol>
                   <MDBCol>
-                    <MDBCardText className="text-muted">Labrador</MDBCardText>
+                    {isEditing ? (
+                      <MDBInput
+                        value={petData.breed}
+                        onChange={(e) => setPetData({ ...petData, breed: e.target.value })}
+                      />
+                    ) : (
+                      <MDBCardText className="text-muted">{petData.breed}</MDBCardText>
+                    )}
                   </MDBCol>
                 </MDBRow>
                 <hr />
@@ -85,7 +173,14 @@ export default function PetProfile() {
                     <MDBCardText>Owner Name</MDBCardText>
                   </MDBCol>
                   <MDBCol>
-                    <MDBCardText className="text-muted">Kamal</MDBCardText>
+                    {isEditing ? (
+                      <MDBInput
+                        value={petData.ownerName}
+                        onChange={(e) => setPetData({ ...petData, ownerName: e.target.value })}
+                      />
+                    ) : (
+                      <MDBCardText className="text-muted">{petData.ownerName}</MDBCardText>
+                    )}
                   </MDBCol>
                 </MDBRow>
                 <hr />
@@ -94,7 +189,14 @@ export default function PetProfile() {
                     <MDBCardText>Owner ID</MDBCardText>
                   </MDBCol>
                   <MDBCol>
-                    <MDBCardText className="text-muted">Owner01</MDBCardText>
+                    {isEditing ? (
+                      <MDBInput
+                        value={petData.ownerId}
+                        onChange={(e) => setPetData({ ...petData, ownerId: e.target.value })}
+                      />
+                    ) : (
+                      <MDBCardText className="text-muted">{petData.ownerId}</MDBCardText>
+                    )}
                   </MDBCol>
                 </MDBRow>
                 <hr />
@@ -103,7 +205,14 @@ export default function PetProfile() {
                     <MDBCardText>Email Address</MDBCardText>
                   </MDBCol>
                   <MDBCol>
-                    <MDBCardText className="text-muted">visalsathsara55@gmail.com</MDBCardText>
+                    {isEditing ? (
+                      <MDBInput
+                        value={petData.email}
+                        onChange={(e) => setPetData({ ...petData, email: e.target.value })}
+                      />
+                    ) : (
+                      <MDBCardText className="text-muted">{petData.email}</MDBCardText>
+                    )}
                   </MDBCol>
                 </MDBRow>
                 <hr />
@@ -112,11 +221,28 @@ export default function PetProfile() {
                     <MDBCardText>Registration Date</MDBCardText>
                   </MDBCol>
                   <MDBCol>
-                    <MDBCardText className="text-muted">2022-07-09</MDBCardText>
+                    {isEditing ? (
+                      <MDBInput
+                        type="date"
+                        value={petData.registrationDate.split('T')[0]} // Handle date format
+                        onChange={(e) => setPetData({ ...petData, registrationDate: e.target.value })}
+                      />
+                    ) : (
+                      <MDBCardText className="text-muted">{petData.registrationDate}</MDBCardText>
+                    )}
                   </MDBCol>
                 </MDBRow>
+                <hr />
+                {isEditing ? (
+                  <button className='update-btn' onClick={handleUpdatePet} color="success">Save Changes</button>
+                ) : (
+                  <>
+                    <button className='update-btn' onClick={() => setIsEditing(true)} color="primary">Edit</button>
+                    <button className='delete-btn' onClick={handleDeletePet} color="danger">Delete Pet</button>
+                  </>
+                )}
               </MDBCardBody>
-            </MDBCard>   
+            </MDBCard>
           </MDBCol>
         </MDBRow>
 
@@ -144,7 +270,7 @@ export default function PetProfile() {
                   onChange={(e) => setDate(e.target.value)}
                   className="mb-3"
                 />
-                <MDBBtn onClick={handleAddTreatment}>Add Treatment</MDBBtn>
+                <button className='update-btn' onClick={handleAddTreatment}>Add Treatment</button>
               </MDBCardBody>
             </MDBCard>
 
@@ -154,406 +280,27 @@ export default function PetProfile() {
                 <MDBTable>
                   <MDBTableHead>
                     <tr>
-                      <th>Treatment Name</th>
-                      <th>Doctor</th>
-                      <th>Date</th>
-                    </tr>
+                      
+                    <th>Treatment Name</th>
+                    <th>Doctor</th>
+                    <th>Date</th>
+                  </tr>
                   </MDBTableHead>
                   <MDBTableBody>
-                    {treatments.map((treatment, index) => (
-                      <tr key={index}>
-                        <td>{treatment.treatmentName}</td>
-                        <td>{treatment.doctor}</td>
-                        <td>{treatment.date}</td>
-                      </tr>
-                    ))}
-                  </MDBTableBody>
-                </MDBTable>
-              </MDBCardBody>
-            </MDBCard>
-          </MDBCol>
-        </MDBRow>
-      </MDBContainer>
-    </section>
-  );
-}
-
-
-
-
-
-
-
-
-
-// PetProfile.js
-/*import React, { useState } from 'react';
-import {
-  MDBCol,
-  MDBContainer,
-  MDBRow,
-  MDBCard,
-  MDBCardText,
-  MDBCardBody,
-  MDBCardImage,
-  MDBInput,
-  MDBBtn,
-  MDBTable,
-  MDBTableHead,
-  MDBTableBody
-} from 'mdb-react-ui-kit';
-import './Profile.css'; // Import the CSS file
-
-export default function PetProfile() {
-  const [treatments, setTreatments] = useState([]);
-  const [treatmentName, setTreatmentName] = useState('');
-  const [doctor, setDoctor] = useState('');
-  const [date, setDate] = useState('');
-
-  const handleAddTreatment = () => {
-    const newTreatment = { treatmentName, doctor, date };
-    setTreatments([...treatments, newTreatment]);
-    setTreatmentName('');
-    setDoctor('');
-    setDate('');
-  };
-
-  return (
-    <section className="pet-profile-section">
-      <MDBContainer>
-        <MDBRow>
-          <MDBCol>
-            <MDBCard>
-              <MDBCardBody className="text-center">
-                <MDBCardImage
-                  src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp"
-                  alt="pet avatar"
-                  className="rounded-circle"
-                  style={{ width: '150px' }}
-                  fluid
-                />
-                <p className="text-muted mb-1">Tommy</p>
-                <p className="text-muted mb-4">ID : wqjk1efh</p>
-              </MDBCardBody>
-            </MDBCard>
-          </MDBCol>
-          
-          <MDBCol>
-            <MDBCard>
-              <MDBCardBody>
-                <MDBRow>
-                  <MDBCol>
-                    <MDBCardText>Name</MDBCardText>
-                  </MDBCol>
-                  <MDBCol>
-                    <MDBCardText className="text-muted">Buddy</MDBCardText>
-                  </MDBCol>
-                </MDBRow>
-                <hr />
-                <MDBRow>
-                  <MDBCol>
-                    <MDBCardText>Birthday</MDBCardText>
-                  </MDBCol>
-                  <MDBCol>
-                    <MDBCardText className="text-muted">2000-04-09</MDBCardText>
-                  </MDBCol>
-                </MDBRow>
-                <hr />
-                <MDBRow>
-                  <MDBCol>
-                    <MDBCardText>Breed</MDBCardText>
-                  </MDBCol>
-                  <MDBCol>
-                    <MDBCardText className="text-muted">Labrador</MDBCardText>
-                  </MDBCol>
-                </MDBRow>
-                <hr />
-                <MDBRow>
-                  <MDBCol>
-                    <MDBCardText>Owner Name</MDBCardText>
-                  </MDBCol>
-                  <MDBCol>
-                    <MDBCardText className="text-muted">Kamal</MDBCardText>
-                  </MDBCol>
-                </MDBRow>
-                <hr />
-                <MDBRow>
-                  <MDBCol>
-                    <MDBCardText>Owner ID</MDBCardText>
-                  </MDBCol>
-                  <MDBCol>
-                    <MDBCardText className="text-muted">Owner01</MDBCardText>
-                  </MDBCol>
-                </MDBRow>
-                <hr />
-                <MDBRow>
-                  <MDBCol>
-                    <MDBCardText>Email Address</MDBCardText>
-                  </MDBCol>
-                  <MDBCol>
-                    <MDBCardText className="text-muted">visalsathsara55@gmail.com</MDBCardText>
-                  </MDBCol>
-                </MDBRow>
-                <hr />
-                <MDBRow>
-                  <MDBCol>
-                    <MDBCardText>Registration Date</MDBCardText>
-                  </MDBCol>
-                  <MDBCol>
-                    <MDBCardText className="text-muted">2022-07-09</MDBCardText>
-                  </MDBCol>
-                </MDBRow>
-              </MDBCardBody>
-            </MDBCard>   
-          </MDBCol>
-        </MDBRow>
-
-        <MDBRow>
-          <MDBCol>
-            <MDBCard className="mt-4">
-              <MDBCardBody>
-                <h4>Add Treatment</h4>
-                <MDBInput
-                  label="Treatment Name"
-                  value={treatmentName}
-                  onChange={(e) => setTreatmentName(e.target.value)}
-                  className="mb-3"
-                />
-                <MDBInput
-                  label="Doctor"
-                  value={doctor}
-                  onChange={(e) => setDoctor(e.target.value)}
-                  className="mb-3"
-                />
-                <MDBInput
-                  label="Date"
-                  type="date"
-                  value={date}
-                  onChange={(e) => setDate(e.target.value)}
-                  className="mb-3"
-                />
-                <MDBBtn onClick={handleAddTreatment}>Add Treatment</MDBBtn>
-              </MDBCardBody>
-            </MDBCard>
-
-            <MDBCard className="mt-4">
-              <MDBCardBody>
-                <h4>Treatment History</h4>
-                <MDBTable>
-                  <MDBTableHead>
-                    <tr>
-                      <th>Treatment Name</th>
-                      <th>Doctor</th>
-                      <th>Date</th>
+                  {treatments.map((treatment, index) => (
+                    <tr key={index}>
+                      <td>{treatment.treatmentName}</td>
+                      <td>{treatment.doctor}</td>
+                      <td>{treatment.date}</td>
                     </tr>
-                  </MDBTableHead>
-                  <MDBTableBody>
-                    {treatments.map((treatment, index) => (
-                      <tr key={index}>
-                        <td>{treatment.treatmentName}</td>
-                        <td>{treatment.doctor}</td>
-                        <td>{treatment.date}</td>
-                      </tr>
-                    ))}
+                  ))}
                   </MDBTableBody>
-                </MDBTable>
-              </MDBCardBody>
-            </MDBCard>
-          </MDBCol>
-        </MDBRow>
-      </MDBContainer>
-    </section>
-  );
-}*/
-
-
-
-
-
-
-
-// PetProfile.js
-/*import React, { useState } from 'react';
-import {
-  MDBCol,
-  MDBContainer,
-  MDBRow,
-  MDBCard,
-  MDBCardText,
-  MDBCardBody,
-  MDBCardImage,
-  MDBInput,
-  MDBBtn,
-  MDBTable,
-  MDBTableHead,
-  MDBTableBody
-} from 'mdb-react-ui-kit';
-import './Profile.css'; // Import the CSS file
-
-export default function PetProfile() {
-  const [treatments, setTreatments] = useState([]);
-  const [treatmentName, setTreatmentName] = useState('');
-  const [doctor, setDoctor] = useState('');
-  const [date, setDate] = useState('');
-
-  const handleAddTreatment = () => {
-    const newTreatment = { treatmentName, doctor, date };
-    setTreatments([...treatments, newTreatment]);
-    setTreatmentName('');
-    setDoctor('');
-    setDate('');
-  };
-
-  return (
-    <section className="pet-profile-section">
-      <MDBContainer>
-        <MDBRow>
-          <MDBCol>
-            <MDBCard>
-              <MDBCardBody className="text-center">
-                <MDBCardImage
-                  src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp"
-                  alt="pet avatar"
-                  className="rounded-circle"
-                  style={{ width: '150px' }}
-                  fluid
-                />
-                <p className="text-muted mb-1">Tommy</p>
-                <p className="text-muted mb-4">ID : wqjk1efh</p>
-              </MDBCardBody>
-            </MDBCard>
-          </MDBCol>
-          
-          <MDBCol>
-            <MDBCard>
-              <MDBCardBody>
-                <MDBRow>
-                  <MDBCol>
-                    <MDBCardText>Name</MDBCardText>
+                  </MDBTable>
+                  </MDBCardBody>
+                  </MDBCard>
                   </MDBCol>
-                  <MDBCol>
-                    <MDBCardText className="text-muted">Buddy</MDBCardText>
-                  </MDBCol>
-                </MDBRow>
-                <hr />
-                <MDBRow>
-                  <MDBCol>
-                    <MDBCardText>Birthday</MDBCardText>
-                  </MDBCol>
-                  <MDBCol>
-                    <MDBCardText className="text-muted">2000-04-09</MDBCardText>
-                  </MDBCol>
-                </MDBRow>
-                <hr />
-                <MDBRow>
-                  <MDBCol>
-                    <MDBCardText>Breed</MDBCardText>
-                  </MDBCol>
-                  <MDBCol>
-                    <MDBCardText className="text-muted">Labrador</MDBCardText>
-                  </MDBCol>
-                </MDBRow>
-                <hr />
-                <MDBRow>
-                  <MDBCol>
-                    <MDBCardText>Owner Name</MDBCardText>
-                  </MDBCol>
-                  <MDBCol>
-                    <MDBCardText className="text-muted">Kamal</MDBCardText>
-                  </MDBCol>
-                </MDBRow>
-                <hr />
-                <MDBRow>
-                  <MDBCol>
-                    <MDBCardText>Owner ID</MDBCardText>
-                  </MDBCol>
-                  <MDBCol>
-                    <MDBCardText className="text-muted">Owner01</MDBCardText>
-                  </MDBCol>
-                </MDBRow>
-                <hr />
-                <MDBRow>
-                  <MDBCol>
-                    <MDBCardText>Email Address</MDBCardText>
-                  </MDBCol>
-                  <MDBCol>
-                    <MDBCardText className="text-muted">visalsathsara55@gmail.com</MDBCardText>
-                  </MDBCol>
-                </MDBRow>
-                <hr />
-                <MDBRow>
-                  <MDBCol>
-                    <MDBCardText>Registration Date</MDBCardText>
-                  </MDBCol>
-                  <MDBCol>
-                    <MDBCardText className="text-muted">2022-07-09</MDBCardText>
-                  </MDBCol>
-                </MDBRow>
-              </MDBCardBody>
-            </MDBCard>   
-          </MDBCol>
-        </MDBRow>
-
-        <MDBRow>
-          <MDBCol>
-            <MDBCard className="mt-4">
-              <MDBCardBody>
-                <h4>Add Treatment</h4>
-                <MDBInput
-                  label="Treatment Name"
-                  value={treatmentName}
-                  onChange={(e) => setTreatmentName(e.target.value)}
-                  className="mb-3"
-                />
-                <MDBInput
-                  label="Doctor"
-                  value={doctor}
-                  onChange={(e) => setDoctor(e.target.value)}
-                  className="mb-3"
-                />
-                <MDBInput
-                  label="Date"
-                  type="date"
-                  value={date}
-                  onChange={(e) => setDate(e.target.value)}
-                  className="mb-3"
-                />
-                <MDBBtn onClick={handleAddTreatment}>Add Treatment</MDBBtn>
-              </MDBCardBody>
-            </MDBCard>
-
-            <MDBCard className="mt-4">
-              <MDBCardBody>
-                <h4>Treatment History</h4>
-                <MDBTable>
-                  <MDBTableHead>
-                    <tr>
-                      <th>Treatment Name</th>
-                      <th>Doctor</th>
-                      <th>Date</th>
-                    </tr>
-                  </MDBTableHead>
-                  <MDBTableBody>
-                    {treatments.map((treatment, index) => (
-                      <tr key={index}>
-                        <td>{treatment.treatmentName}</td>
-                        <td>{treatment.doctor}</td>
-                        <td>{treatment.date}</td>
-                      </tr>
-                    ))}
-                  </MDBTableBody>
-                </MDBTable>
-              </MDBCardBody>
-            </MDBCard>
-          </MDBCol>
-        </MDBRow>
-      </MDBContainer>
-    </section>
-  );
-}
-*/
-
-
-
-
-
+                  </MDBRow>
+                  </MDBContainer>
+                  </section>
+                  );
+                }
