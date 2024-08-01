@@ -6,6 +6,7 @@ const cors = require('cors');
 const app = express();
 const port = 5000;
 
+
 app.use(cors());
 app.use(bodyParser.json());
 
@@ -16,33 +17,13 @@ const db = mysql.createConnection({
   database: 'vetez',
 });
 
-db.connect((err) => {
-  if (err) throw err;
+db.connect(err => {
+  if (err) {
+    console.error('Database connection failed:', err.stack);
+    return;
+  }
   console.log('Connected to database');
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -105,16 +86,29 @@ app.get('/pets/:petId', (req, res) => {
 
 
 
-app.post('/addDoctor', (req, res) => {
-  const { docId, docName, birthday, address, registrationDate } = req.body;
+app.post('/add-doctor', (req, res) => {
+  const { docName, birthday, address, registrationDate, docId } = req.body;
+  const query = 'INSERT INTO doctors (docName, birthday, address, registrationDate, docId) VALUES (?, ?, ?, ?, ?)';
 
-  const query = 'INSERT INTO doctors (docId, docName, birthday, address, registrationDate) VALUES (?, ?, ?, ?, ?)';
-  db.query(query, [docId, docName, birthday, address, registrationDate], (err, result) => {
+  db.query(query, [docName, birthday, address, registrationDate, docId], (err, result) => {
     if (err) {
       console.error('Error inserting data:', err);
-      res.status(500).send('Error inserting data');
+      res.status(500).send('Server error');
     } else {
       res.status(200).send('Doctor added successfully');
+    }
+  });
+});
+
+
+app.get('/doctors', (req, res) => {
+  const sql = 'SELECT * FROM doctors';
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('Error retrieving doctors');
+    } else {
+      res.status(200).json(results);
     }
   });
 });
@@ -123,29 +117,28 @@ app.post('/addDoctor', (req, res) => {
 
 
 
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+
+
+// Endpoint to fetch a pet by ID
+app.get('/doctors/:docId', (req, res) => {
+const { docId } = req.params;
+const sql = 'SELECT * FROM doctors WHERE docId = ?';
+db.query(sql, [docId], (err, results) => {
+  if (err) {
+    res.status(500).send('Error fetching doctor');
+  } else if (results.length === 0) {
+    res.status(404).send('doctor not found');
+  } else {
+    res.json(results[0]);
+  }
+});
 });
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+});
 
 
 

@@ -90,19 +90,28 @@ const AddDoctorForm = () => {
 
   useEffect(() => {
     setRegistrationDate(new Date().toLocaleString());
-    setDocId(generateShortId(8)); // Generates an 8-character long ID
+    setDocId(generateShortId(6)); // Generates a 6-character long ID
   }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log({
-      docName,
-      birthday,
-      address,
-      registrationDate,
-      docId,
-    });
-    // Add code here to handle form submission (e.g., send data to an API)
+
+    
+
+    try {
+      const response = await axios.post('http://localhost:5000/add-doctor', {
+        docName,
+        birthday,
+        address,
+        registrationDate,
+        docId,
+      });
+      console.log(response.data);
+      alert('Doctor added successfully');
+    } catch (error) {
+      console.error('There was an error adding the doctor:', error);
+      alert('Failed to add pet');
+    }
   };
 
   return (
