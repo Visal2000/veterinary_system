@@ -5,8 +5,8 @@ import {Link} from 'react-router-dom';
 const DocItem = ({ doc }) => {
   return (
     <tr>
-      <td>{doc.id}</td>
-      <td>{doc.name}</td>
+      <td>{doc.docId}</td>
+      <td>{doc.docName}</td>
       <td>{doc.birthday}</td>
       <td>{doc.address}</td>
       <td>{doc.registrationDate}</td>
