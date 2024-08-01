@@ -44,9 +44,6 @@ app.post('/add-pet', (req, res) => {
 });
 
 
-
-
-
 app.get('/pets', (req, res) => {
     const sql = 'SELECT * FROM pets';
     db.query(sql, (err, results) => {
@@ -58,9 +55,6 @@ app.get('/pets', (req, res) => {
       }
     });
   });
-
-
-
 
 
 
@@ -79,10 +73,6 @@ app.get('/pets/:petId', (req, res) => {
     }
   });
 });
-
-
-
-
 
 
 
@@ -133,6 +123,63 @@ db.query(sql, [docId], (err, results) => {
   }
 });
 });
+
+
+
+
+
+
+
+app.post('/add-appointment', (req, res) => {
+  const {petId, name, reason, doctor, date } = req.body;
+  const query = 'INSERT INTO appointments (petId, name, reason, doctor, date) VALUES (?, ?, ?, ?, ?)';
+
+  db.query(query, [petId, name, reason, doctor, date], (err, result) => {
+    if (err) {
+      console.error('Error inserting data:', err);
+      res.status(500).send('Server error');
+    } else {
+      res.status(200).send('appointment added successfully');
+    }
+  });
+});
+
+
+app.get('/appointments', (req, res) => {
+  const sql = 'SELECT * FROM appointments';
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('Error retrieving appointments');
+    } else {
+      res.status(200).json(results);
+    }
+  });
+});
+
+
+
+
+
+
+
+// Endpoint to fetch a pet by ID
+app.get('/appointment/:appId', (req, res) => {
+const { appId } = req.params;
+const sql = 'SELECT * FROM appointments WHERE appId = ?';
+db.query(sql, [appId], (err, results) => {
+  if (err) {
+    res.status(500).send('Error fetching appointment');
+  } else if (results.length === 0) {
+    res.status(404).send('appointment not found');
+  } else {
+    res.json(results[0]);
+  }
+});
+});
+
+
+
 
 
 

@@ -52,7 +52,7 @@ const AddAppointmentForm = () => {
 export default AddAppointmentForm;*/
 
 
-import React, { useState, useEffect } from 'react';
+import React, { useState} from 'react';
 import './AddAppointmentForm.css';
 import axios from 'axios';
 
@@ -61,13 +61,27 @@ const AddAppointmentForm = () => {
   const [name, setName] = useState('');
   const [reason, setReason] = useState('');
   const [doctor, setDoctor] = useState('');
-  const [date, setDate] = useState('');s
-  const [time, setTime] = useState('');
-
-  const handleSubmit = (e) => {
+  const [date, setDate] = useState('');
+  
+  const handleSubmit = async(e) => {
     e.preventDefault();
-    // Add your form submission logic here
-    console.log({ petId, name, reason, doctor, date, time });
+    
+    try {
+      const response = await axios.post('http://localhost:5000/add-appointment', {
+        
+        petId,
+        name,
+        reason,
+        doctor,
+        date,
+        
+      });
+      console.log(response.data);
+      alert('Appointment added successfully');
+    } catch (error) {
+      console.error('There was an error adding the appointment:', error);
+      alert('Failed to add appointment');
+    }
   };
 
   return (
@@ -93,10 +107,7 @@ const AddAppointmentForm = () => {
           <label htmlFor="date">Date:</label>
           <input type="date" id="date" value={date} onChange={(e) => setDate(e.target.value)} required />
         </div>
-        <div className="form-group">
-          <label htmlFor="time">Time:</label>
-          <input type="time" id="time" value={time} onChange={(e) => setTime(e.target.value)} required />
-        </div>
+       
         <button type="submit">Add Appointment</button>
       </form>
     </div>
