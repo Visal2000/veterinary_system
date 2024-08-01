@@ -62,19 +62,19 @@ const AddAppointmentForm = () => {
   const [reason, setReason] = useState('');
   const [doctor, setDoctor] = useState('');
   const [date, setDate] = useState('');
-  const [time, setTime] = useState('');
-
+  
   const handleSubmit = async(e) => {
     e.preventDefault();
     
     try {
       const response = await axios.post('http://localhost:5000/add-appointment', {
+        
         petId,
         name,
         reason,
         doctor,
         date,
-        time,
+        
       });
       console.log(response.data);
       alert('Appointment added successfully');
@@ -107,10 +107,7 @@ const AddAppointmentForm = () => {
           <label htmlFor="date">Date:</label>
           <input type="date" id="date" value={date} onChange={(e) => setDate(e.target.value)} required />
         </div>
-        <div className="form-group">
-          <label htmlFor="time">Time:</label>
-          <input type="time" id="time" value={time} onChange={(e) => setTime(e.target.value)} required />
-        </div>
+       
         <button type="submit">Add Appointment</button>
       </form>
     </div>

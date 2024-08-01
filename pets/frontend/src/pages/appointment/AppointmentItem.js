@@ -10,7 +10,7 @@ const AppointmentItem = ({ app }) => {
       <td>{app.reason}</td>
       <td>{app.doctor}</td>
       <td>{app.date}</td>
-      <td>{app.time}</td>
+      
       <td>
         <button>Edit</button>
         <button>Delete</button>

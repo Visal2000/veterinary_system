@@ -89,7 +89,7 @@ const AppointmentList = () => {
 
   useEffect(() => {
     const newFilteredApps = apps.filter(app =>
-      app.appId.toLowerCase().includes(filter.toLowerCase())
+      app.petId.toLowerCase().includes(filter.toLowerCase())
     );
     console.log('Filtered apps:', newFilteredApps); // Debug log
     setFilteredApps(newFilteredApps);
@@ -119,14 +119,20 @@ const AppointmentList = () => {
             <th>Reason</th>
             <th>Doctor</th>
             <th>Date</th>
-            <th>Time</th>
+           
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          {filteredApps.map(app => (
-            <AppointmentItem key={app.id} app={app} />
-          ))}
+        {filteredApps.length === 0 ? (
+            <tr>
+              <td colSpan="10">No Appointments available</td>
+            </tr>
+          ) : (
+            filteredApps.map(app => (
+              <AppointmentItem key={app.appId} app={app} />
+            ))
+          )}
         </tbody>
       </table>
     </div>
