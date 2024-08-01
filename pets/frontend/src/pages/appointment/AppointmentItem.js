@@ -4,7 +4,8 @@ import React from 'react';
 const AppointmentItem = ({ app }) => {
   return (
     <tr>
-      <td>{app.id}</td>
+      <td>{app.appId}</td>
+      <td>{app.petId}</td>
       <td>{app.name}</td>
       <td>{app.reason}</td>
       <td>{app.doctor}</td>
