@@ -12,14 +12,11 @@ const PetItem = ({ pet }) => {
       <td>{pet.ownerName}</td>
       <td>{pet.ownerId}</td>
       <td>{pet.address}</td>
-      
-      
-
-      
-
+      <td>{pet.registrationDate}</td>
+      <td>{pet.email}</td>
       <td>
-      <Link to={`/PetProfile/${pet.petId}`}>View</Link>
-        
+      <Link to="/PetProfile">View</Link>
+        <button>Delete</button>
       </td>
     </tr>
   );
