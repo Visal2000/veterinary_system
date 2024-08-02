@@ -17,6 +17,7 @@ const db = mysql.createConnection({
   database: 'vetez',
 });
 
+
 db.connect(err => {
   if (err) {
     console.error('Database connection failed:', err.stack);
@@ -181,6 +182,71 @@ db.query(sql, [appId], (err, results) => {
 
 
 
+
+
+
+
+
+
+
+// API to add a notice
+app.post('/add-notice', (req, res) => {
+  const { ownerName, ownerId, description, mobileNumber, date, image } = req.body;
+  const query = 'INSERT INTO notices (ownerName, ownerId, description, mobileNumber, date, image) VALUES (?, ?, ?, ?, ?, ?)';
+
+  db.query(query, [ownerName, ownerId, description, mobileNumber, date, image], (err, result) => {
+    if (err) {
+      console.error('Error inserting data:', err);
+      res.status(500).send('Server error');
+    } else {
+      res.status(200).send('Notice added successfully');
+    }
+  });
+});
+
+// API to get all notices
+app.get('/notices', (req, res) => {
+  const query = 'SELECT * FROM notices';
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error fetching data:', err);
+      res.status(500).send('Server error');
+    } else {
+      res.status(200).json(results);
+    }
+  });
+});
+
+// API to update a notice
+app.put('/update-notice/:id', (req, res) => {
+  const { id } = req.params;
+  const { ownerName, ownerId, description, mobileNumber, date, image } = req.body;
+  const query = 'UPDATE notices SET ownerName = ?, ownerId = ?, description = ?, mobileNumber = ?, date = ?, image = ? WHERE id = ?';
+
+  db.query(query, [ownerName, ownerId, description, mobileNumber, date, image, id], (err, result) => {
+    if (err) {
+      console.error('Error updating data:', err);
+      res.status(500).send('Server error');
+    } else {
+      res.status(200).send('Notice updated successfully');
+    }
+  });
+});
+
+// API to delete a notice
+app.delete('/delete-notice/:id', (req, res) => {
+  const { id } = req.params;
+  const query = 'DELETE FROM notices WHERE id = ?';
+
+  db.query(query, [id], (err, result) => {
+    if (err) {
+      console.error('Error deleting data:', err);
+      res.status(500).send('Server error');
+    } else {
+      res.status(200).send('Notice deleted successfully');
+    }
+  });
+});
 
 
 app.listen(port, () => {
