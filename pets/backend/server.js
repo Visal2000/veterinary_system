@@ -249,6 +249,57 @@ app.delete('/delete-notice/:id', (req, res) => {
 });
 
 
+
+
+
+
+
+
+
+
+
+// API to get total pets count
+app.get('/total-pets', (req, res) => {
+  const query = 'SELECT COUNT(*) as count FROM pets';
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error fetching pets count:', err);
+      res.status(500).send('Server error');
+    } else {
+      res.status(200).json({ count: results[0].count });
+    }
+  });
+});
+
+// API to get total doctors count
+app.get('/total-doctors', (req, res) => {
+  const query = 'SELECT COUNT(*) as count FROM doctors';
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error fetching doctors count:', err);
+      res.status(500).send('Server error');
+    } else {
+      res.status(200).json({ count: results[0].count });
+    }
+  });
+});
+
+// API to get total appointments count
+app.get('/total-appointments', (req, res) => {
+  const query = 'SELECT COUNT(*) as count FROM appointments';
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error fetching appointments count:', err);
+      res.status(500).send('Server error');
+    } else {
+      res.status(200).json({ count: results[0].count });
+    }
+  });
+});
+
+
+
+
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
