@@ -1,5 +1,9 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
+
 const mysql = require('mysql2');
 const cors = require('cors');
 
@@ -31,7 +35,7 @@ db.connect(err => {
 
 
 
-app.post('/add-pet', (req, res) => {
+/*app.post('/add-pet', (req, res) => {
   const { petName, birthday, breed, ownerName, ownerId, address, registrationDate, petId, email } = req.body;
   const sql = 'INSERT INTO pets (petName, birthday, breed, ownerName, ownerId, address, registrationDate, petId, email) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
   db.query(sql, [petName, birthday, breed, ownerName, ownerId, address, registrationDate, petId, email], (err, result) => {
@@ -73,7 +77,7 @@ app.get('/pets/:petId', (req, res) => {
       res.json(results[0]);
     }
   });
-});
+});*/
 
 
 
@@ -258,19 +262,6 @@ app.delete('/delete-notice/:id', (req, res) => {
 
 
 
-// API to get total pets count
-app.get('/total-pets', (req, res) => {
-  const query = 'SELECT COUNT(*) as count FROM pets';
-  db.query(query, (err, results) => {
-    if (err) {
-      console.error('Error fetching pets count:', err);
-      res.status(500).send('Server error');
-    } else {
-      res.status(200).json({ count: results[0].count });
-    }
-  });
-});
-
 // API to get total doctors count
 app.get('/total-doctors', (req, res) => {
   const query = 'SELECT COUNT(*) as count FROM doctors';
@@ -296,6 +287,286 @@ app.get('/total-appointments', (req, res) => {
     }
   });
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Ensure uploads directory exists
+const uploadsDir = path.join(__dirname, 'uploads');
+
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+
+
+
+
+
+
+
+
+
+
+
+
+// Fetch all pets
+app.get('/pets', (req, res) => {
+  const sql = 'SELECT * FROM pets';
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('Error retrieving pets');
+    } else {
+      res.status(200).json(results);
+    }
+  });
+});
+
+// Fetch pet data by ID
+app.get('/pets/:petId', (req, res) => {
+  const { petId } = req.params;
+  const sql = 'SELECT * FROM pets WHERE petId = ?';
+  db.query(sql, [petId], (err, results) => {
+    if (err) {
+      res.status(500).send('Error fetching pet');
+    } else if (results.length === 0) {
+      res.status(404).send('Pet not found');
+    } else {
+      res.json(results[0]);
+    }
+  });
+});
+
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/');
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname));
+  }
+});
+
+const upload = multer({ storage: storage });
+
+// API endpoint to add a pet
+app.post('/add-pet', upload.single('petImage'), (req, res) => {
+  const { petName, birthday, breed, ownerName, ownerId, address, registrationDate, petId, email } = req.body;
+  const petImage = req.file ? `/uploads/${req.file.filename}` : null;
+
+  const sql = 'INSERT INTO pets (petName, birthday, breed, ownerName, ownerId, address, registrationDate, petId, email, petImage) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+  const values = [petName, birthday, breed, ownerName, ownerId, address, registrationDate, petId, email, petImage];
+
+  db.query(sql, values, (err, result) => {
+    if (err) {
+      console.error('Error inserting pet:', err);
+      res.status(500).send('Server error');
+      return;
+    }
+    res.status(201).send('Pet added');
+  });
+});
+
+// Serve uploaded files statically
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+
+
+
+// Update pet data by ID, including image
+app.put('/pets/:petId', upload.single('petImage'), (req, res) => {
+  const { petId } = req.params;
+  const { petName, birthday, breed, ownerName, ownerId, address, registrationDate, email } = req.body;
+  const petImage = req.file ? `/uploads/${req.file.filename}` : null;
+
+  let sql = 'UPDATE pets SET petName = ?, birthday = ?, breed = ?, ownerName = ?, ownerId = ?, address = ?, registrationDate = ?, email = ?';
+  const values = [petName, birthday, breed, ownerName, ownerId, address, registrationDate, email];
+
+  if (petImage) {
+    sql += ', petImage = ?';
+    values.push(petImage);
+  }
+
+  sql += ' WHERE petId = ?';
+  values.push(petId);
+
+  db.query(sql, values, (err, results) => {
+    if (err) {
+      console.error('Error updating pet data:', err);
+      res.status(500).send('Error updating pet data.');
+    } else {
+      res.send('Pet data updated successfully.');
+    }
+  });
+});
+
+
+
+
+// Delete pet data by ID
+app.delete('/pets/:petId', (req, res) => {
+  const { petId } = req.params;
+
+  // Delete associated treatments first
+  const deleteTreatmentsSql = 'DELETE FROM treatments WHERE petId = ?';
+  db.query(deleteTreatmentsSql, [petId], (err) => {
+    if (err) {
+      console.error('Error deleting treatments:', err);
+      res.status(500).send('Error deleting treatments.');
+      return;
+    }
+
+    // Delete pet
+    const deletePetSql = 'DELETE FROM pets WHERE petId = ?';
+    db.query(deletePetSql, [petId], (err, result) => {
+      if (err) {
+        console.error('Error deleting pet data:', err);
+        res.status(500).send('Error deleting pet data.');
+      } else {
+        res.send('Pet data deleted successfully.');
+      }
+    });
+  });
+});
+
+// Fetch all treatments for a pet
+app.get('/treatments/:petId', (req, res) => {
+  const { petId } = req.params;
+  const sql = 'SELECT * FROM treatments WHERE petId = ?';
+  db.query(sql, [petId], (err, results) => {
+    if (err) {
+      console.error('Error fetching treatments:', err);
+      res.status(500).send('Error fetching treatments.');
+    } else {
+      res.json(results);
+    }
+  });
+});
+
+// Add a new treatment
+app.post('/treatments', (req, res) => {
+  const { petId, treatmentName, doctor, date } = req.body;
+  const sql = 'INSERT INTO treatments (petId, treatmentName, doctor, date) VALUES (?, ?, ?, ?)';
+  db.query(sql, [petId, treatmentName, doctor, date], (err, result) => {
+    if (err) {
+      console.error('Error adding treatment:', err);
+      res.status(500).send('Error adding treatment.');
+    } else {
+      res.status(200).send('Treatment added successfully');
+    }
+  });
+});
+
+// Create treatments table if it does not exist
+app.get('/create-treatments-table', (req, res) => {
+  const sql = `
+    CREATE TABLE IF NOT EXISTS treatments (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      petId VARCHAR(8),
+      treatmentName VARCHAR(255),
+      doctor VARCHAR(255),
+      date DATE,
+      FOREIGN KEY (petId) REFERENCES pets(petId) ON DELETE CASCADE
+    )
+  `;
+  db.query(sql, (err, result) => {
+    if (err) {
+      console.error('Error creating treatments table:', err);
+      res.status(500).send('Error creating treatments table.');
+    } else {
+      res.send('Treatments table created or already exists.');
+    }
+  });
+});
+
+
+// API to get total pets count
+app.get('/total-pets', (req, res) => {
+  const query = 'SELECT COUNT(*) as count FROM pets';
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error fetching pets count:', err);
+      res.status(500).send('Server error');
+    } else {
+      res.status(200).json({ count: results[0].count });
+    }
+  });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
