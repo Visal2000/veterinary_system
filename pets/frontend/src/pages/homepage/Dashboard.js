@@ -101,22 +101,6 @@ const Dashboard = () => {
         <div className="metric">Total Doctors: {totalDoctors}</div>
         <div className="metric">Appointments: {totalAppointments}</div>
       </div>
-
-      <div className="recent-patients">
-        <h3>Recent Registrations</h3>
-        <input
-          type="text"
-          className="search-bar"
-          placeholder="Search activities..."
-          value={searchTerm}
-          onChange={handleSearchChange}
-        />
-        <ul>
-          {filteredActivities.map((activity, index) => (
-            <li key={index}>{activity}</li>
-          ))}
-        </ul>
-      </div>
     </div>
   );
 };
