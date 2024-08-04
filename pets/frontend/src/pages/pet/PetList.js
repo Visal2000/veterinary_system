@@ -16,7 +16,7 @@ const PetList = () => {
   useEffect(() => {
     const fetchPetsData = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/pets'); // Ensure the port matches the backend
+        const response = await axios.get('http://localhost:5000/pets'); // Ensure the port matches the backend
         console.log('Fetched pets data:', response.data);
         setPetsData(response.data);
         setLoading(false);

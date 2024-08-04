@@ -11,8 +11,8 @@ const DocItem = ({ doc }) => {
       <td>{doc.address}</td>
       <td>{doc.registrationDate}</td>
       <td>
-      <Link to="/DoctorProfile">View</Link>
-        <button>Delete</button>
+      <Link to={`/DocProfile/${doc.docId}`}>View</Link>
+        
       </td>
     </tr>
   );
