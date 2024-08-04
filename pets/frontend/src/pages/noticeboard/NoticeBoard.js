@@ -235,6 +235,9 @@ export default function NoticeBoard() {
   const handleDelete = async (index) => {
     try {
       await axios.delete(`http://localhost:5000/delete-notice/${notices[index].id}`);
+      window.alert('delete');
+     
+
       setNotices(notices.filter((_, i) => i !== index));
     } catch (error) {
       console.error('Error deleting notice:', error);
