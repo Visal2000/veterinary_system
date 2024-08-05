@@ -551,6 +551,25 @@
                                       </MDBCol>
                                     </MDBRow>
                                     <hr />
+
+                                    <MDBRow>
+                                      <MDBCol>
+                                        <MDBCardText>Address</MDBCardText>
+                                      </MDBCol>
+                                      <MDBCol>
+                                        {isEditing ? (
+                                          <MDBInput
+                                            value={petData.address}
+                                            onChange={(e) => setPetData({ ...petData, address: e.target.value })}
+                                          />
+                                        ) : (
+                                          <MDBCardText className="text-muted">{petData.address}</MDBCardText>
+                                        )}
+                                      </MDBCol>
+                                    </MDBRow>
+
+
+                                    <hr />
                                     <MDBRow>
                                       <MDBCol>
                                         <MDBCardText>Registration Date</MDBCardText>
