@@ -81,7 +81,7 @@ app.get('/pets/:petId', (req, res) => {
 
 
 
-app.post('/add-doctor', (req, res) => {
+/*app.post('/add-doctor', (req, res) => {
   const { docName, birthday, address, registrationDate, docId } = req.body;
   const query = 'INSERT INTO doctors (docName, birthday, address, registrationDate, docId) VALUES (?, ?, ?, ?, ?)';
 
@@ -127,7 +127,7 @@ db.query(sql, [docId], (err, results) => {
     res.json(results[0]);
   }
 });
-});
+});*/
 
 
 
@@ -508,27 +508,7 @@ app.post('/treatments', (req, res) => {
   });
 });
 
-// Create treatments table if it does not exist
-app.get('/create-treatments-table', (req, res) => {
-  const sql = `
-    CREATE TABLE IF NOT EXISTS treatments (
-      id INT AUTO_INCREMENT PRIMARY KEY,
-      petId VARCHAR(8),
-      treatmentName VARCHAR(255),
-      doctor VARCHAR(255),
-      date DATE,
-      FOREIGN KEY (petId) REFERENCES pets(petId) ON DELETE CASCADE
-    )
-  `;
-  db.query(sql, (err, result) => {
-    if (err) {
-      console.error('Error creating treatments table:', err);
-      res.status(500).send('Error creating treatments table.');
-    } else {
-      res.send('Treatments table created or already exists.');
-    }
-  });
-});
+
 
 
 // API to get total pets count
@@ -564,16 +544,6 @@ app.get('/total-pets', (req, res) => {
 
 
 
-
-
-
-
-
-
-
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
-});
 
 
 
@@ -654,3 +624,116 @@ const PORT = 5000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });   */
+
+// Fetch all doctors
+app.get('/doctors', (req, res) => {
+  const sql = 'SELECT * FROM doctors';
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('Error retrieving doctors');
+    } else {
+      res.status(200).json(results);
+    }
+  });
+});
+
+// Fetch doctor data by ID
+app.get('/doctors/:docId', (req, res) => {
+  const { docId } = req.params;
+  const sql = 'SELECT * FROM doctors WHERE docId = ?';
+  db.query(sql, [docId], (err, results) => {
+    if (err) {
+      res.status(500).send('Error fetching doctor');
+    } else if (results.length === 0) {
+      res.status(404).send('Doctor not found');
+    } else {
+      res.json(results[0]);
+    }
+  });
+});
+
+
+
+
+
+// API endpoint to add a pet
+app.post('/add-doctor', upload.single('docImage'), (req, res) => {
+  const { docName, birthday,address,registrationDate, docId } = req.body;
+  const docImage = req.file ? `/uploads/${req.file.filename}` : null;
+
+  const sql = 'INSERT INTO doctors (docName, birthday,address,registrationDate, docId, docImage) VALUES (?, ?, ?, ?, ?, ?)';
+  const values = [docName, birthday,address,registrationDate, docId, docImage];
+
+  db.query(sql, values, (err, result) => {
+    if (err) {
+      console.error('Error inserting doctor:', err);
+      res.status(500).send('Server error');
+      return;
+    }
+    res.status(201).send('Doctor added');
+  });
+});
+
+// Serve uploaded files statically
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+
+
+
+// Update pet data by ID, including image
+app.put('/doctors/:docId', upload.single('docImage'), (req, res) => {
+  const { docId } = req.params;
+  const { docName, birthday,address,registrationDate} = req.body;
+  const docImage = req.file ? `/uploads/${req.file.filename}` : null;
+
+  let sql = 'UPDATE doctors SET docName = ?, birthday = ?, address = ?,registrationDate = ?';
+  const values = [docName, birthday,address,registrationDate];
+
+  if (docImage) {
+    sql += ', docImage = ?';
+    values.push(docImage);
+  }
+
+  sql += ' WHERE docId = ?';
+  values.push(docId);
+
+  db.query(sql, values, (err, results) => {
+    if (err) {
+      console.error('Error updating doctor data:', err);
+      res.status(500).send('Error updating doctor data.');
+    } else {
+      res.send('Doctor data updated successfully.');
+    }
+  });
+});
+
+
+
+
+// Delete pet data by ID
+app.delete('/doctors/:docId', (req, res) => {
+  const { docId } = req.params;
+
+  
+
+    // Delete pet
+    const deleteDoctorSql = 'DELETE FROM doctors WHERE docId = ?';
+    db.query(deleteDoctorSql, [docId], (err, result) => {
+      if (err) {
+        console.error('Error deleting doctor data:', err);
+        res.status(500).send('Error deleting doctor data.');
+      } else {
+        res.send('Doctor data deleted successfully.');
+      }
+    });
+  
+});
+
+
+
+
+
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+});

@@ -7,7 +7,7 @@ import AddPetForm from './pages/pet/AddPetForm';
 import AddAppointmentForm from './pages/appointment/AddAppointmentForm';
 import AddDoctorForm from './pages/doctor/AddDoctorForm';
 import DocList from './pages/doctor/DocList';
-import DoctorProfile from './pages/doctor/DoctorProfile';
+import DocProfile from './pages/doctor/DocProfile';
 import PetProfile from './pages/pet/PetProfile';
 import AppointmentList from './pages/appointment/AppointmentList';
 import NoticeBoard from './pages/noticeboard/NoticeBoard';
@@ -33,7 +33,7 @@ const App = () => {
           <Route path="/AddAppointmentForm" element={<AddAppointmentForm/>} />
           <Route path="/DocList" element={<DocList/>} />
           <Route path="/AddDoctorForm" element={<AddDoctorForm/>} />
-          <Route path="/DoctorProfile" element={<DoctorProfile/>} />
+          <Route path="/DocProfile/:docId" element={<DocProfile/>} />
           <Route path="/PetProfile/:petId" element={<PetProfile/>} />
           <Route path="/AppointmentList" element={<AppointmentList/>} />
           <Route path="/NoticeBoard" element={<NoticeBoard/>} />

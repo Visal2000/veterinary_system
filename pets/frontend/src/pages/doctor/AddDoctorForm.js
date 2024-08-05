@@ -71,6 +71,7 @@ export default AddDoctorForm;*/
 import React, { useState, useEffect } from 'react';
 import './AddDoctorForm.css';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const generateShortId = (length) => {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -87,30 +88,42 @@ const AddDoctorForm = () => {
   const [address, setAddress] = useState('');
   const [registrationDate, setRegistrationDate] = useState('');
   const [docId, setDocId] = useState('');
+  const [docImage, setDocImage] = useState(null); // Add state for pet image
+  const navigate = useNavigate();
 
   useEffect(() => {
     setRegistrationDate(new Date().toLocaleString());
     setDocId(generateShortId(6)); // Generates a 6-character long ID
   }, []);
 
+  const handleImageChange = (e) => {
+    setDocImage(e.target.files[0]);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    
+    const formData = new FormData();
+    formData.append('docName', docName);
+    formData.append('birthday', birthday);
+    formData.append('address', address);
+    formData.append('registrationDate', registrationDate);
+    formData.append('docId', docId);
+    formData.append('docImage', docImage);
+
 
     try {
-      const response = await axios.post('http://localhost:5000/add-doctor', {
-        docName,
-        birthday,
-        address,
-        registrationDate,
-        docId,
+      const response = await axios.post('http://localhost:5000/add-doctor',formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       });
       console.log(response.data);
       alert('Doctor added successfully');
+      navigate('/Doclist');
     } catch (error) {
       console.error('There was an error adding the doctor:', error);
-      alert('Failed to add pet');
+      alert('Failed to add doctor');
     }
   };
 
@@ -136,6 +149,10 @@ const AddDoctorForm = () => {
       <label>
         Doctor ID:
         <input type="text" value={docId} readOnly className="readonly-field" />
+      </label>
+      <label>
+        Doctor Image:
+        <input type="file" onChange={handleImageChange} required />
       </label>
       <button type="submit">Add Doctor</button>
     </form>
