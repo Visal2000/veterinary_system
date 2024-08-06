@@ -1,6 +1,6 @@
 .dashboard {
     padding-left: 300px;
-    width: 80%;
+    width: 98%;
     padding-top: 10px;
     flex: 1;
      
@@ -16,8 +16,9 @@
     flex: 1;
     margin: 0 10px;
     padding: 20px;
-    background-color: #5faafa;
-    border-radius: 8px;
+    background-color: #ffffff;
+    border: 2px solid #2196f3; /* Set border width, style, and color */
+    border-radius: 80px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     text-align: center;
     width: 22%;
@@ -25,4 +26,25 @@
   
   
   
+  
+  
+  
+  .notification-icon {
+    position: relative;
+    cursor: pointer;
+    font-size: 24px;
+    color: #2196f3;
+  }
+  
+  .notification-icon::after {
+    content: '';
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    width: 10px;
+    height: 10px;
+    background-color: red;
+    border-radius: 50%;
+    border: 1px solid white;
+  }
   

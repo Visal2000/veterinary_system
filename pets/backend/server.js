@@ -737,3 +737,37 @@ app.delete('/doctors/:docId', (req, res) => {
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+app.get('/check-anniversary', (req, res) => {
+  const today = moment().format('YYYY-MM-DD');
+  const oneYearAgo = moment().subtract(1, 'year').format('YYYY-MM-DD');
+
+  const query = `
+    SELECT * FROM pets 
+    WHERE DATE(registrationDate) = ? 
+  `;
+
+  db.query(query, [oneYearAgo], (error, results) => {
+    if (error) {
+      console.error('Error fetching pets:', error);
+      res.status(500).send('Server Error');
+    } else {
+      // Send notifications to users (implement as needed)
+      res.json(results);
+    }
+  });
+});
