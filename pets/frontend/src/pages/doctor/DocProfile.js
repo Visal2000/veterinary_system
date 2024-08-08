@@ -188,11 +188,11 @@ import React, { useState, useEffect } from 'react';
                                       </MDBRow>
                                       <hr />
                                       {isEditing ? (
-                                        <button className='update-btn' onClick={handleUpdateDoc} color="success">Save Changes</button>
+                                        <button className='button button-save' onClick={handleUpdateDoc} color="success">Save Changes</button>
                                       ) : (
                                         <>
-                                          <button className='update-btn' onClick={() => setIsEditing(true)} color="primary">Edit</button>
-                                          <button className='delete-btn' onClick={() => setShowModal(true)} color="danger">Delete Doctor</button>
+                                          <button className='button button-primary' onClick={() => setIsEditing(true)} color="primary">Edit</button>
+                                          <button className='button button-danger' onClick={() => setShowModal(true)} color="danger">Delete Doctor</button>
                                         </>
                                       )}
                                     </MDBCardBody>

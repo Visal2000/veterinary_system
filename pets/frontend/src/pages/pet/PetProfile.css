@@ -3,8 +3,12 @@
 /* Main Container */
 .pet-profile-section {
   background-color: #ffffff;
-  padding: 20px 0;
+  padding: 20px 20px;
+  position:relative;
+  left: 250px;
+  width:1200px;
   
+
 }
 
 /* Card Styles */
@@ -30,7 +34,7 @@
   border: 5px solid #ffffff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   margin-bottom: 15px;
-  width: 10px;
+  width: 100px;
   height: 150px;
   object-fit: cover;
 }
