@@ -1,5 +1,6 @@
 // src/pages/AppointmentItem.js
 import React from 'react';
+import './AppointmentItem.css';
 
 const AppointmentItem = ({ app }) => {
   return (
@@ -12,8 +13,8 @@ const AppointmentItem = ({ app }) => {
       <td>{app.date}</td>
       
       <td>
-        <button>Edit</button>
-        <button>Delete</button>
+        
+        <button className='delete-button'>Delete</button>
       </td>
     </tr>
   );

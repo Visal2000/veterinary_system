@@ -1,0 +1,17 @@
+/* src/pages/AppointmentItem.css */
+.delete-button {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  
+  
+  .delete-button:focus {
+    outline-color: black;
+  }
+  

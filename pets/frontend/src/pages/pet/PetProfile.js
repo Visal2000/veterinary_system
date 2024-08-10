@@ -475,18 +475,7 @@
                           }
                         };
                      
-                        /*const handleImageChange = (e) => {
-                          const file = e.target.files[0];
-                          setImageFile(file);
-                          const reader = new FileReader();
-                          reader.onloadend = () => {
-                            setPreviewImage(reader.result);
-                          };
-                          if (file) {
-                            reader.readAsDataURL(file);
-                          }
-                          //reader.readAsDataURL(file);
-                        };/*/
+                        
                         const handleImageChange = (e) => {
                           const file = e.target.files[0];
                           if (file) {
