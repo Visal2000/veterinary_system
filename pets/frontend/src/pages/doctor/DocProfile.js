@@ -170,22 +170,16 @@ import React, { useState, useEffect } from 'react';
 
                                     <hr />
                                     <MDBRow>
-                                      <MDBCol>
-                                        <MDBCardText>Registration Date</MDBCardText>
-                                      </MDBCol>
-                                      <MDBCol>
-                                        {isEditing ? (
-                                          <MDBInput
-                                            type="date"
-                                            value={docData.registrationDate.split('T')[0]} // Handle date format
-                                            onChange={(e) => setDocData({ ...docData, registrationDate: e.target.value })}
-                                          />
-                                        ) : (
-                                          
-                                            <MDBCardText className="text-muted">{docData.registrationDate}</MDBCardText>
-                                          )}
+                                        <MDBCol>
+                                          <MDBCardText>Registration Date</MDBCardText>
                                         </MDBCol>
-                                      </MDBRow>
+                                        <MDBCol>
+                                          
+                                            
+                                              <MDBCardText className="text-muted">{docData.registrationDate}</MDBCardText>
+                                            
+                                          </MDBCol>  
+                                        </MDBRow> 
                                       <hr />
                                       {isEditing ? (
                                         <button className='button button-save' onClick={handleUpdateDoc} color="success">Save Changes</button>
