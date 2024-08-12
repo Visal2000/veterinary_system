@@ -503,6 +503,24 @@ app.listen(port, () => {
 
 
 
+// Add this to your server.js
+app.get('/appointments', (req, res) => {
+  const sql = `SELECT * FROM appointments WHERE date >= NOW() - INTERVAL 7 DAY ORDER BY date DESC LIMIT 5`;
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error('Error fetching recent appointments:', err);
+      res.status(500).send('Error fetching recent appointments');
+    } else {
+      res.status(200).json(results);
+    }
+  });
+});
+
+
+
+
+
+
 
 
 
