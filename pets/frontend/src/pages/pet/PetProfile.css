@@ -1,0 +1,186 @@
+/* Profile.css */
+
+/* Main Container */
+.pet-profile-section {
+  background-color: #ffffff;
+  padding: 20px 20px;
+  position:relative;
+  left: 250px;
+  width:1200px;
+  
+
+}
+
+/* Card Styles */
+.MDBCard {
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.MDBCardBody {
+  padding: 30px;
+  
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Image */
+.MDBCardImage {
+  border: 5px solid #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 15px;
+  width: 100px;
+  height: 150px;
+  object-fit: cover;
+}
+
+.rounded-circle {
+  border-radius: 50%;
+}
+
+/* Text Styles */
+.MDBCardText {
+  font-weight: 500;
+  color: #6c757d;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.text-muted {
+  color: #6c757d !important;
+}
+
+/* Info Table */
+.pet-info-table {
+  width: 100%;
+  margin-top: 20px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.pet-info-table td, .pet-info-table th {
+  padding: 15px;
+  border-bottom: 1px solid #e9ecef;
+  text-align: left;
+}
+
+.pet-info-table th {
+  background-color: #f8f9fa;
+  font-weight: bold;
+}
+
+.pet-info-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* Buttons */
+.button {
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  border: none;
+  margin: 10px;
+}
+
+.button-primary {
+  background-color: #007bff;
+  color: #ffffff;
+}
+
+.button-primary:hover {
+  background-color: #0056b3;
+}
+
+.button-danger {
+  background-color: #dc3545;
+  color: #ffffff;
+}
+
+.button-danger:hover {
+  background-color: #c82333;
+}
+
+.button-save {
+  background-color: #28a745;
+  color: #ffffff;
+}
+
+.button-save:hover {
+  background-color: #218838;
+}
+
+/* Table Styles */
+.MDBTable {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.MDBTableHead th {
+  background-color: #f8f9fa;
+  font-weight: bold;
+}
+
+.MDBTableBody tr {
+  border-bottom: 1px solid #dee2e6;
+}
+
+.MDBTableBody tr:hover {
+  background-color: #f1f3f5;
+}
+
+.MDBTableBody td {
+  padding: 10px;
+}
+
+/* Modal Styles */
+.Modal .ModalHeader {
+  border-bottom: none;
+}
+
+.Modal .ModalTitle {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.Modal .ModalBody {
+  font-size: 16px;
+  color: #6c757d;
+}
+
+.Modal .ModalFooter {
+  border-top: none;
+}
+
+.Modal .ModalFooter .Button {
+  font-size: 16px;
+  padding: 10px 20px;
+  border-radius: 5px;
+}
+
+.Modal .ModalFooter .Button-secondary {
+  background-color: #6c757d;
+  color: #ffffff;
+}
+
+.Modal .ModalFooter .Button-secondary:hover {
+  background-color: #5a6268;
+}
+
+.Modal .ModalFooter .Button-danger {
+  background-color: #dc3545;
+  color: #ffffff;
+}
+
+.Modal .ModalFooter .Button-danger:hover {
+  background-color: #c82333;
+}

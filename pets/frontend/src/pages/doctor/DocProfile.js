@@ -1,183 +1,3 @@
-// PetProfile.js
-/*import React, { useState } from 'react';
-import {
-  MDBCol,
-  MDBContainer,
-  MDBRow,
-  MDBCard,
-  MDBCardText,
-  MDBCardBody,
-  MDBCardImage,
-  MDBInput,
-  MDBBtn,
-  MDBTable,
-  MDBTableHead,
-  MDBTableBody
-} from 'mdb-react-ui-kit';
-import './Profile.css'; // Import the CSS file
-
-export default function PetProfile() {
-  const [treatments, setTreatments] = useState([]);
-  const [treatmentName, setTreatmentName] = useState('');
-  const [doctor, setDoctor] = useState('');
-  const [date, setDate] = useState('');
-
-  const handleAddTreatment = () => {
-    const newTreatment = { treatmentName, doctor, date };
-    setTreatments([...treatments, newTreatment]);
-    setTreatmentName('');
-    setDoctor('');
-    setDate('');
-  };
-
-  return (
-    <section className="pet-profile-section">
-      <MDBContainer>
-        <MDBRow>
-          <MDBCol>
-            <MDBCard>
-              <MDBCardBody className="text-center">
-                <MDBCardImage
-                  src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp"
-                  alt="pet avatar"
-                  className="rounded-circle"
-                  style={{ width: '150px' }}
-                  fluid
-                />
-                <p className="text-muted mb-1">Tommy</p>
-                <p className="text-muted mb-4">ID : wqjk1efh</p>
-              </MDBCardBody>
-            </MDBCard>
-          </MDBCol>
-          
-          <MDBCol>
-            <MDBCard>
-              <MDBCardBody>
-                <MDBRow>
-                  <MDBCol>
-                    <MDBCardText>Name</MDBCardText>
-                  </MDBCol>
-                  <MDBCol>
-                    <MDBCardText className="text-muted">Buddy</MDBCardText>
-                  </MDBCol>
-                </MDBRow>
-                <hr />
-                <MDBRow>
-                  <MDBCol>
-                    <MDBCardText>Birthday</MDBCardText>
-                  </MDBCol>
-                  <MDBCol>
-                    <MDBCardText className="text-muted">buddy@petemail.com</MDBCardText>
-                  </MDBCol>
-                </MDBRow>
-                <hr />
-                <MDBRow>
-                  <MDBCol>
-                    <MDBCardText>Breed</MDBCardText>
-                  </MDBCol>
-                  <MDBCol>
-                    <MDBCardText className="text-muted">(097) 234-5678</MDBCardText>
-                  </MDBCol>
-                </MDBRow>
-                <hr />
-                <MDBRow>
-                  <MDBCol>
-                    <MDBCardText>Owner Name</MDBCardText>
-                  </MDBCol>
-                  <MDBCol>
-                    <MDBCardText className="text-muted">(098) 765-4321</MDBCardText>
-                  </MDBCol>
-                </MDBRow>
-                <hr />
-                <MDBRow>
-                  <MDBCol>
-                    <MDBCardText>Owner ID</MDBCardText>
-                  </MDBCol>
-                  <MDBCol>
-                    <MDBCardText className="text-muted">San Francisco, CA</MDBCardText>
-                  </MDBCol>
-                </MDBRow>
-                <hr />
-                <MDBRow>
-                  <MDBCol>
-                    <MDBCardText>Email Address</MDBCardText>
-                  </MDBCol>
-                  <MDBCol>
-                    <MDBCardText className="text-muted">visalsathsara55@gmail.com</MDBCardText>
-                  </MDBCol>
-                </MDBRow>
-                <hr />
-                <MDBRow>
-                  <MDBCol>
-                    <MDBCardText>Registration Date</MDBCardText>
-                  </MDBCol>
-                  <MDBCol>
-                    <MDBCardText className="text-muted">2022-07-09</MDBCardText>
-                  </MDBCol>
-                </MDBRow>
-              </MDBCardBody>
-            </MDBCard>   
-          </MDBCol>
-        </MDBRow>
-
-        <MDBRow>
-          <MDBCol>
-            <MDBCard className="mt-4">
-              <MDBCardBody>
-                <h4>Add Treatment</h4>
-                <MDBInput
-                  label="Treatment Name"
-                  value={treatmentName}
-                  onChange={(e) => setTreatmentName(e.target.value)}
-                  className="mb-3"
-                />
-                <MDBInput
-                  label="Doctor"
-                  value={doctor}
-                  onChange={(e) => setDoctor(e.target.value)}
-                  className="mb-3"
-                />
-                <MDBInput
-                  label="Date"
-                  type="date"
-                  value={date}
-                  onChange={(e) => setDate(e.target.value)}
-                  className="mb-3"
-                />
-                <MDBBtn onClick={handleAddTreatment}>Add Treatment</MDBBtn>
-              </MDBCardBody>
-            </MDBCard>
-
-            <MDBCard className="mt-4">
-              <MDBCardBody>
-                <h4>Treatment History</h4>
-                <MDBTable>
-                  <MDBTableHead>
-                    <tr>
-                      <th>Treatment Name</th>
-                      <th>Doctor</th>
-                      <th>Date</th>
-                    </tr>
-                  </MDBTableHead>
-                  <MDBTableBody>
-                    {treatments.map((treatment, index) => (
-                      <tr key={index}>
-                        <td>{treatment.treatmentName}</td>
-                        <td>{treatment.doctor}</td>
-                        <td>{treatment.date}</td>
-                      </tr>
-                    ))}
-                  </MDBTableBody>
-                </MDBTable>
-              </MDBCardBody>
-            </MDBCard>
-          </MDBCol>
-        </MDBRow>
-      </MDBContainer>
-    </section>
-  );
-}*/
-
 
 import React, { useState, useEffect } from 'react';
                     import {
@@ -194,7 +14,8 @@ import React, { useState, useEffect } from 'react';
                     } from 'mdb-react-ui-kit';
                     import { useParams, useNavigate } from 'react-router-dom';
                     import axios from 'axios';
-                    import './Profile.css';
+                    import './DocProfile.css';
+                    import { Modal, Button } from 'react-bootstrap';
                     
                     export default function DocProfile() {
                       const { docId } = useParams();
@@ -204,7 +25,9 @@ import React, { useState, useEffect } from 'react';
                       const [isEditing, setIsEditing] = useState(false);
                       const [imageFile, setImageFile] = useState(null);
                       const [previewImage, setPreviewImage] = useState(null);
-                    
+                      const [showModal, setShowModal] = useState(false);
+                      const closeModal = () => setShowModal(false);
+
                       useEffect(() => {
                         const fetchDocData = async () => {
                           try {
@@ -347,29 +170,23 @@ import React, { useState, useEffect } from 'react';
 
                                     <hr />
                                     <MDBRow>
-                                      <MDBCol>
-                                        <MDBCardText>Registration Date</MDBCardText>
-                                      </MDBCol>
-                                      <MDBCol>
-                                        {isEditing ? (
-                                          <MDBInput
-                                            type="date"
-                                            value={docData.registrationDate.split('T')[0]} // Handle date format
-                                            onChange={(e) => setDocData({ ...docData, registrationDate: e.target.value })}
-                                          />
-                                        ) : (
-                                          
-                                            <MDBCardText className="text-muted">{docData.registrationDate}</MDBCardText>
-                                          )}
+                                        <MDBCol>
+                                          <MDBCardText>Registration Date</MDBCardText>
                                         </MDBCol>
-                                      </MDBRow>
+                                        <MDBCol>
+                                          
+                                            
+                                              <MDBCardText className="text-muted">{docData.registrationDate}</MDBCardText>
+                                            
+                                          </MDBCol>  
+                                        </MDBRow> 
                                       <hr />
                                       {isEditing ? (
-                                        <button className='update-btn' onClick={handleUpdateDoc} color="success">Save Changes</button>
+                                        <button className='button button-save' onClick={handleUpdateDoc} color="success">Save Changes</button>
                                       ) : (
                                         <>
-                                          <button className='update-btn' onClick={() => setIsEditing(true)} color="primary">Edit</button>
-                                          <button className='delete-btn' onClick={handleDeleteDoc} color="danger">Delete Doctor</button>
+                                          <button className='button button-primary' onClick={() => setIsEditing(true)} color="primary">Edit</button>
+                                          <button className='button button-danger' onClick={() => setShowModal(true)} color="danger">Delete Doctor</button>
                                         </>
                                       )}
                                     </MDBCardBody>
@@ -379,6 +196,30 @@ import React, { useState, useEffect } from 'react';
                       
                               
                             </MDBContainer>
+                            {/* Modal for confirmation */}
+        <Modal show={showModal} onHide={closeModal}>
+          <Modal.Header >
+            <Modal.Title>Confirm Deletion</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            Are you sure you want to delete this pet?
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={closeModal}>
+              Cancel
+            </Button>
+            <Button variant="danger" onClick={() => {
+              handleDeleteDoc();
+              closeModal();
+            }}>
+              Delete
+            </Button>
+          </Modal.Footer>
+        </Modal>
+
+
+
+
                           </section>
                         );
                       }

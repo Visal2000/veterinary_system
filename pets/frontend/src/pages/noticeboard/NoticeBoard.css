@@ -5,12 +5,13 @@
   align-items: center;
   padding: 2rem;
   background-color: #f8f9fa;
+  
 }
 
 .add-notice-container,
 .view-notices-container {
   width: 100%;
-  max-width: 600px;
+  max-width: 800px;
   background-color: #fff;
   border: 1px solid #dee2e6;
   border-radius: 0.25rem;

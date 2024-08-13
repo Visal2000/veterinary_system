@@ -1,0 +1,29 @@
+.confirm-popup {
+  position: absolute;
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 15px;
+  z-index: 100;
+}
+
+.confirm-button, .cancel-button {
+  margin: 5px;
+  padding: 5px 10px;
+}
+
+.delete-button {
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.delete-button:hover {
+  background-color: darkred;
+}
+
+.error-message {
+  color: red;
+  margin-top: 10px;
+}
