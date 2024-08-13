@@ -3,16 +3,34 @@ const bodyParser = require('body-parser');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const dotenv = require("dotenv");
+const emailRoutes = require("./routes/emailRoutes");
+
+
+
+
+
 
 const mysql = require('mysql2');
 const cors = require('cors');
+const corsOptions = {
+  origin: "*",
+  credentials: true, //access-control-allow-credentials:true
+  optionSuccessStatus: 200,
+};
 
 const app = express();
+dotenv.config();
 const port = 5000;
 
 
 app.use(cors());
 app.use(bodyParser.json());
+app.use(express.json());
+app.use("/email", emailRoutes);
+
+const PORT = process.env.PORT;
+
 
 const db = mysql.createConnection({
   host: 'localhost',
@@ -34,10 +52,10 @@ db.connect(err => {
 
 
 app.post('/add-appointment', (req, res) => {
-  const {petId, name, reason, doctor, date } = req.body;
-  const query = 'INSERT INTO appointments (petId, name, reason, doctor, date) VALUES (?, ?, ?, ?, ?)';
+  const {petId, name, reason, doctor, date, time } = req.body;
+  const query = 'INSERT INTO appointments (petId, name, reason, doctor, date, time) VALUES (?, ?, ?, ?, ? , ?)';
 
-  db.query(query, [petId, name, reason, doctor, date], (err, result) => {
+  db.query(query, [petId, name, reason, doctor, date, time], (err, result) => {
     if (err) {
       console.error('Error inserting data:', err);
       res.status(500).send('Server error');
@@ -137,6 +155,13 @@ app.delete('/delete-notice/:id', (req, res) => {
     }
   });
 });
+
+
+
+
+
+
+
 
 
 
@@ -286,7 +311,7 @@ app.put('/pets/:petId', upload.single('petImage'), (req, res) => {
 
 
 // Delete pet data by ID
-app.delete('/pets/:petId', (req, res) => {
+/*app.delete('/pets/:petId', (req, res) => {
   const { petId } = req.params;
 
   // Delete associated treatments first
@@ -309,7 +334,48 @@ app.delete('/pets/:petId', (req, res) => {
       }
     });
   });
+});*/
+app.delete('/pets/:petId', (req, res) => {
+  const { petId } = req.params;
+  
+  // Fetch the pet details first
+  const fetchPetSql = 'SELECT * FROM pets WHERE petId = ?';
+  db.query(fetchPetSql, [petId], (err, results) => {
+      if (err) {
+          console.error('Error fetching pet details:', err);
+          return res.status(500).send('Error fetching pet details');
+      }
+      
+      const petDetails = results[0];
+      const deletedTime = new Date().toISOString().slice(0, 19).replace('T', ' ');
+
+      // Insert into deleted_pets table
+      const insertSql = 'INSERT INTO deleted_pets (petId, petName, birthday, breed, ownerName, ownerId, address, registrationDate, email, petImage, deletedTime) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+      const values = [petDetails.petId, petDetails.petName, petDetails.birthday, petDetails.breed, petDetails.ownerName, petDetails.ownerId, petDetails.address, petDetails.registrationDate, petDetails.email, petDetails.petImage, deletedTime];
+
+      db.query(insertSql, values, (err, result) => {
+          if (err) {
+              console.error('Error inserting into deleted_pets:', err);
+              return res.status(500).send('Error archiving pet details');
+          }
+
+          // Delete the pet from the pets table
+          const deletePetSql = 'DELETE FROM pets WHERE petId = ?';
+          db.query(deletePetSql, [petId], (err, result) => {
+              if (err) {
+                  console.error('Error deleting pet data:', err);
+                  return res.status(500).send('Error deleting pet data');
+              } else {
+                  res.send('Pet data deleted successfully');
+              }
+          });
+      });
+  });
 });
+
+
+
+
 
 // Fetch all treatments for a pet
 app.get('/treatments/:petId', (req, res) => {
@@ -357,6 +423,11 @@ app.get('/total-pets', (req, res) => {
 
 
 
+
+
+
+
+
 // Fetch all doctors
 app.get('/doctors', (req, res) => {
   const sql = 'SELECT * FROM doctors';
@@ -389,7 +460,7 @@ app.get('/doctors/:docId', (req, res) => {
 
 
 
-// API endpoint to add a pet
+// API endpoint to add a doctors
 app.post('/add-doctor', upload.single('docImage'), (req, res) => {
   const { docName, birthday,address,registrationDate, docId } = req.body;
   const docImage = req.file ? `/uploads/${req.file.filename}` : null;
@@ -413,7 +484,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 
 
-// Update pet data by ID, including image
+// Update doct data by ID, including image
 app.put('/doctors/:docId', upload.single('docImage'), (req, res) => {
   const { docId } = req.params;
   const { docName, birthday,address,registrationDate} = req.body;
@@ -443,13 +514,13 @@ app.put('/doctors/:docId', upload.single('docImage'), (req, res) => {
 
 
 
-// Delete pet data by ID
+// Delete doct data by ID
 app.delete('/doctors/:docId', (req, res) => {
   const { docId } = req.params;
 
   
 
-    // Delete pet
+    // Delete doctor
     const deleteDoctorSql = 'DELETE FROM doctors WHERE docId = ?';
     db.query(deleteDoctorSql, [docId], (err, result) => {
       if (err) {
@@ -494,9 +565,7 @@ app.get('/check-anniversary', (req, res) => {
 });
 
 
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
-});
+
 
 
 
@@ -547,3 +616,11 @@ app.delete('/appointments/:appId', (req, res) => {
 });
 
 
+
+
+
+
+
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+});

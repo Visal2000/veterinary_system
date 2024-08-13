@@ -10,6 +10,8 @@ const DocItem = ({ doc }) => {
       <td>{doc.birthday}</td>
       <td>{doc.address}</td>
       <td>{doc.registrationDate}</td>
+      <td>{doc.address}</td>
+
       <td>
       <Link to={`/DocProfile/${doc.docId}`}>View</Link>
         

@@ -1,0 +1,73 @@
+/* Overall Page Style */
+.login {
+    display: flex;
+    justify-content: center; /* Center the container horizontally */
+    align-items: center; /* Center vertically */
+    height: 100vh; /* Full viewport height */
+    background-color: #ffffff; /* Light background color */
+    margin: 0;
+  }
+  
+  .login .container {
+    width: 100%;
+    max-width: 400px; /* Limit the width of the container */
+    background: #ffffff; /* White background for the form */
+    border: 2px solid #000000; /* Black border */
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1); /* Soft shadow for depth */
+    padding: 20px;
+    box-sizing: border-box;
+  }
+  
+  
+  .login .container .top {
+    display: flex;
+    justify-content: center; /* Center the logo horizontally */
+    margin-bottom: 20px; /* Space between logo and form */
+  }
+  
+  .login .container .top .logo {
+    width: 120px; /* Adjust as needed */
+    height: auto; /* Maintain aspect ratio */
+  }
+  
+  .login .container .formContainer {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .login .container .formContainer form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .login .container .formContainer form .formInput {
+    width: 100%;
+  }
+  
+  .login .container .formContainer form .formInput label {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 5px;
+  }
+  
+  .login .container .formContainer form .formInput input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    outline: none;
+    box-sizing: border-box;
+  }
+  
+  .login .container .formContainer form .formInput input::placeholder {
+    color: #999;
+  }
+  
+  
+  
+  .login .container .formContainer form button:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+  }

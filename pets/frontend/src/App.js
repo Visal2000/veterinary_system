@@ -13,8 +13,9 @@ import AppointmentList from './pages/appointment/AppointmentList';
 import NoticeBoard from './pages/noticeboard/NoticeBoard';
 import './App.css';
 import {BrowserRouter as Router,Route, Routes} from 'react-router-dom';
-
-
+import EmailSent from "./EmailSent";
+import Notification from "./pages/pet/Notification";
+import Login from "./pages/login/Login";
 
 
 const App = () => {
@@ -23,11 +24,13 @@ const App = () => {
     
     <Router>
       <div className="App">
+      
       <Sidebar />
       </div>
+      
         <Routes>
-        
-          <Route path="/" element={<Dashboard />} />``
+          
+          <Route path="/" element={<Dashboard />} />
           <Route path="/PetList" element={<PetList/>} />
           <Route path="/AddPetForm" element={<AddPetForm/>} />
           <Route path="/AddAppointmentForm" element={<AddAppointmentForm/>} />
@@ -37,6 +40,8 @@ const App = () => {
           <Route path="/PetProfile/:petId" element={<PetProfile/>} />
           <Route path="/AppointmentList" element={<AppointmentList/>} />
           <Route path="/NoticeBoard" element={<NoticeBoard/>} />
+          <Route path="/EmailSent" element={<EmailSent/>} />
+          <Route path="/Notification" element={<Notification/>} />
 
         </Routes>
         

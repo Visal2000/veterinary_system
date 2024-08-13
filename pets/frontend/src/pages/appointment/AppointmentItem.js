@@ -58,6 +58,7 @@ const AppointmentItem = ({ app, onDelete }) => {
       <td>{app.reason}</td>
       <td>{app.doctor}</td>
       <td>{app.date}</td>
+      <td>{app.time}</td>
       <td>
         <button 
           className='delete-button' 

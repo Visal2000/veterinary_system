@@ -147,6 +147,10 @@ const AddDoctorForm = () => {
         <input type="text" value={registrationDate} readOnly className="readonly-field" />
       </label>
       <label>
+      <label>
+        email:
+        <input type="text" value={docName} onChange={(e) => setDocName(e.target.value)} required />
+      </label>
         Doctor ID:
         <input type="text" value={docId} readOnly className="readonly-field" />
       </label>

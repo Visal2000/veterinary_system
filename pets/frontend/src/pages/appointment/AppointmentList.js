@@ -61,6 +61,7 @@ const AppointmentList = () => {
             <th>Reason</th>
             <th>Doctor</th>
             <th>Date</th>
+            <th>Time</th>
             <th>Actions</th>
           </tr>
         </thead>
