@@ -27,7 +27,7 @@ public class NoticeController {
     }
 
     @GetMapping("/search-notice")
-    public Notice searchNotice(String ownerId){
+    public Notice searchNotice(@RequestBody String ownerId){
 
         Notice notice=service.searchNotice(ownerId);
         System.out.println("ko");
